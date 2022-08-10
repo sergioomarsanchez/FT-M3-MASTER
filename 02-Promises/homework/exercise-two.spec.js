@@ -78,7 +78,7 @@ describe('exercise two (involving poem two)', function () {
 
 	describe('problemB', function () {
 
-		xit('ignoring errors, logs all stanzas in any order, and a done message when all are complete', function (done) {
+		it('ignoring errors, logs all stanzas in any order, and a done message when all are complete', function (done) {
 			exercise.problemB();
 			setTimeout(function () {
 				stanzas.forEach(function (stanza) {
