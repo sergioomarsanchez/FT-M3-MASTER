@@ -22,3 +22,41 @@ var beatles=[{
   profilePic:"http://cp91279.biography.com/BIO_Bio-Shorts_0_Ringo-Starr_SF_HD_768x432-16x9.jpg"
 }
 ]
+
+
+http.createServer( function(req, res){ 
+  if(req.url==='/'){
+    res.writeHead(200, { 'Content-Type':'text/html' })
+    var html = fs.readFileSync('./index.html');
+    res.end(html);    
+  }  
+  let findBeatle = req.url.split('/').pop();
+  let foundBeatle = beatles.find((beatle) => findBeatle === encodeURI(beatle.name)/*boolean*/) 
+  if(foundBeatle){
+    res.writeHead(200, { 'Content-Type':'text/html' })
+    let read = fs.readFileSync(`${__dirname}/beatle.html`, 'utf-8')
+    read = read.replace(/{name}/g, foundBeatle.name)
+    read = read.replace('{birth}', foundBeatle.birthdate)
+    read = read.replace('{profilePic}', foundBeatle.profilePic)
+    res.end(read);
+  }else{
+    res.writeHead(404, { 'Content-Type':'text/plain' });
+    res.end('Beatle not found')
+  }
+  if(req.url==='/api' || req.url==='/api/') {
+    res.writeHead(200, { 'Content-Type':'application/json' })
+	  res.end( JSON.stringify(beatles) );
+  }
+  if(req.url.substring(0,5)==='/api/' && req.url.length>5){
+    let findBeatle = req.url.split('/').pop();
+    let foundBeatle = beatles.find((beatle) => findBeatle === encodeURI(beatle.name)/*boolean*/) 
+
+    if(foundBeatle){
+      res.writeHead(200, { 'Content-Type':'application/json' })
+      res.end( JSON.stringify(foundBeatle) );
+    }else{
+      res.writeHead(404, { 'Content-Type':'text/plain' });
+      res.end('Beatle not found')
+    }
+  }
+}).listen(1337, '127.0.0.1');
